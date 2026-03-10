@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 1 Shopping List</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf7f2;
+    --warm-white: #fff9f2;
+    --ink: #1a1612;
+    --brown: #5c3d2e;
+    --rust: #c0522a;
+    --sage: #7a9e7e;
+    --gold: #d4a853;
+    --light-brown: #e8ddd4;
+    --mid-brown: #c4b5a8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--cream);
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0 0 60px 0;
+  }
+
+  /* Paper texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .header {
+    background-color: var(--brown);
+    padding: 40px 24px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0; right: 0;
+    height: 20px;
+    background: var(--cream);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+
+  .header-inner {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header-tag {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 7vw, 52px);
+    font-weight: 900;
+    color: var(--warm-white);
+    line-height: 1.05;
+    margin-bottom: 16px;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .progress-wrap {
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--light-brown);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .progress-count {
+    font-size: 11px;
+    color: var(--mid-brown);
+    margin-top: 5px;
+  }
+
+  .btn-reset {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: var(--light-brown);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+  .btn-reset:hover { background: rgba(255,255,255,0.2); color: white; }
+
+  /* Tabs */
+  .tabs {
+    max-width: 600px;
+    margin: 28px auto 0;
+    padding: 0 16px;
+    display: flex;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .tab {
+    padding: 10px 20px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid var(--light-brown);
+    background: transparent;
+    color: var(--brown);
+    font-family: 'Source Sans 3', sans-serif;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .tab.active {
+    background: var(--brown);
+    border-color: var(--brown);
+    color: white;
+  }
+
+  .tab:hover:not(.active) {
+    border-color: var(--brown);
+    background: var(--light-brown);
+  }
+
+  /* Content */
+  .content {
+    max-width: 600px;
+    margin: 24px auto 0;
+    padding: 0 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Section */
+  .section {
+    margin-bottom: 24px;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(92,61,46,0.08);
+  }
+
+  .section-header {
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid var(--light-brown);
+  }
+
+  .section-icon {
+    font-size: 18px;
+    width: 32px;
+    text-align: center;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--brown);
+    flex: 1;
+  }
+
+  .section-count {
+    font-size: 11px;
+    color: var(--mid-brown);
+    font-weight: 600;
+    background: var(--light-brown);
+    padding: 3px 9px;
+    border-radius: 10px;
+  }
+
+  .section-toggle {
+    font-size: 12px;
+    color: var(--mid-brown);
+    transition: transform 0.2s;
+  }
+
+  .section.collapsed .section-toggle { transform: rotate(-90deg); }
+  .section.collapsed .items-list { display: none; }
+
+  .items-list { padding: 8px 0; }
+
+  /* Item */
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-left: 3px solid transparent;
+  }
+
+  .item:hover { background: var(--warm-white); }
+
+  .item.checked {
+    background: #f0f7f1;
+    border-left-color: var(--sage);
+  }
+
+  .checkbox {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--mid-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    background: white;
+  }
+
+  .item.checked .checkbox {
+    background: var(--sage);
+    border-color: var(--sage);
+  }
+
+  .checkmark {
+    display: none;
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .item.checked .checkmark { display: block; }
+
+  .item-text {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.3;
+    transition: all 0.2s;
+  }
+
+  .item.checked .item-text {
+    text-decoration: line-through;
+    color: var(--mid-brown);
+  }
+
+  .item-note {
+    font-size: 11px;
+    color: var(--rust);
+    font-weight: 600;
+    background: rgba(192,82,42,0.08);
+    padding: 2px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  /* Tip box */
+  .tip-box {
+    background: linear-gradient(135deg, #fff8ee, #fff3e3);
+    border: 1px solid var(--gold);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .tip-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+
+  .tip-text {
+    font-size: 13px;
+    color: var(--brown);
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  .tip-text strong { font-weight: 700; }
+
+  /* All done */
+  .all-done {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(92,61,46,0.08);
+    margin-bottom: 24px;
+  }
+
+  .all-done.show { display: block; }
+  .all-done-emoji { font-size: 48px; margin-bottom: 12px; }
+  .all-done h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--brown);
+    margin-bottom: 8px;
+  }
+  .all-done p { font-size: 14px; color: var(--mid-brown); }
+
+  /* Meals panel */
+  .meal-card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 10px rgba(92,61,46,0.07);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .meal-num {
+    width: 36px;
+    height: 36px;
+    background: var(--brown);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .meal-info { flex: 1; }
+
+  .meal-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+
+  .meal-source {
+    font-size: 12px;
+    color: var(--mid-brown);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .meal-note {
+    font-size: 12px;
+    color: var(--rust);
+    font-weight: 400;
+  }
+
+  .meal-link {
+    font-size: 12px;
+    color: var(--sage);
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .meal-link:hover { text-decoration: underline; }
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-tag">🛒 Family Meal Plan</div>
+    <h1>Week 1 Shopping List</h1>
+    <div class="header-meta">
+      <div class="progress-wrap">
+        <div class="progress-label">Items collected</div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-count" id="progressCount">0 of 0 items</div>
+      </div>
+      <button class="btn-reset" onclick="resetAll()">↺ Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showPanel('market')">🥦 Market</button>
+  <button class="tab" onclick="showPanel('pantry')">🏪 Pantry</button>
+  <button class="tab" onclick="showPanel('meals')">🍽️ Meals</button>
+</div>
+
+<div class="content">
+
+  <!-- MARKET PANEL -->
+  <div class="panel active" id="panel-market">
+
+    <div class="tip-box">
+      <div class="tip-icon">💡</div>
+      <div class="tip-text"><strong>Market tip:</strong> Buy a <strong>larger ~2kg chicken</strong> for the roast — leftovers power 3 lunchboxes. Cook <strong>extra beef stew</strong> — it freezes brilliantly and fills thermos lunches all week.</div>
+    </div>
+
+    <div class="all-done" id="done-market">
+      <div class="all-done-emoji">🧺</div>
+      <h3>Market shop done!</h3>
+      <p>Head to the pantry list next.</p>
+    </div>
+
+    <div class="section" id="section-meat">
+      <div class="section-header" onclick="toggleSection('meat')">
+        <div class="section-icon">🥩</div>
+        <div class="section-title">Meat & Seafood</div>
+        <div class="section-count" id="count-meat">0/8</div>
+        <div class="section-toggle">▾</div>
+      </div>
+      <div class="items-list" id="items-meat">
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Chuck beef — 1.2kg</div><div class="item-note">Stew</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Whole chicken — ~2kg</div><div class="item-note">Roast + lunchboxes</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Chicken thighs or pieces — 6–8 pieces</div><div class="item-note">Med chicken</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Raw prawns — 500–600g, peeled & deveined</div><div class="item-note">Buy fresh day-of</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Salmon fillets — 4 x 180g, skin on</div><div class="item-note">Tray bake</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Ham or deli meat slices — 200g</div><div class="item-note">Lunchboxes</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Salami — small pack</div><div class="item-note">Grazing box</div></div>
+      </div>
+    </div>
+
+    <div class="section" id="section-veg">
+      <div class="section-header" onclick="toggleSection('veg')">
+        <div class="section-icon">🥕</div>
+        <div class="section-title">Vegetables</div>
+        <div class="section-count" id="count-veg">0/15</div>
+        <div class="section-toggle">▾</div>
+      </div>
+      <div class="items-list" id="items-veg">
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Baby potatoes — 900g total</div><div class="item-note">Stew + Med chicken</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Carrots — 5–6 large</div><div class="item-note">Stew + soup</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Celery — 1 bunch</div><div class="item-note">Stew + soup</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Onions — 4 large</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Garlic — 2–3 whole bulbs</div><div class="item-note">Used in everything!</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Cherry tomatoes — 2 punnets</div><div class="item-note">Tray bake + Med chicken</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Asparagus — 1–2 bunches</div><div class="item-note">Tray bake</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Red onion — 1</div><div class="item-note">Med chicken</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Baby spinach — 1 bag</div><div class="item-note">Wraps + bento</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Cucumber — 2</div><div class="item-note">Wraps + bento</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Baby carrots — 1 bag</div><div class="item-note">Bento snacking</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Lemons — 6–7</div><div class="item-note">Used across all recipes</div></div>
+      </div>
+    </div>
+
+    <div class="section" id="section-herbs">
+      <div class="section-header" onclick="toggleSection('herbs')">
+        <div class="section-icon">🌿</div>
+        <div class="section-title">Fresh Herbs</div>
+        <div class="section-count" id="count-herbs">0/3</div>
+        <div class="section-toggle">▾</div>
+      </div>
+      <div class="items-list" id="items-herbs">
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Fresh rosemary — 1 bunch</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Fresh thyme — 1 bunch</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Fresh parsley — 1 bunch</div></div>
+      </div>
+    </div>
+
+    <div class="section" id="section-fruit">
+      <div class="section-header" onclick="toggleSection('fruit')">
+        <div class="section-icon">🍇</div>
+        <div class="section-title">Fruit</div>
+        <div class="section-count" id="count-fruit">0/1</div>
+        <div class="section-toggle">▾</div>
+      </div>
+      <div class="items-list" id="items-fruit">
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Grapes or strawberries — 1 punnet</div><div class="item-note">Grazing box</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PANTRY PANEL -->
+  <div class="panel" id="panel-pantry">
+
+    <div class="tip-box">
+      <div class="tip-icon">💡</div>
+      <div class="tip-text"><strong>Pantry tip:</strong> Check your cupboards before you shop — you likely already have flour, olive oil, Worcestershire sauce and dried spices. The wines and cream are the key buys here.</div>
+    </div>
+
+    <div class="all-done" id="done-pantry">
+      <div class="all-done-emoji">✅</div>
+      <h3>Pantry shop done!</h3>
+      <p>You're all set for the week!</p>
+    </div>
+
+    <div class="section" id="section-dairy">
+      <div class="section-header" onclick="toggleSection('dairy')">
+        <div class="section-icon">🧈</div>
+        <div class="section-title">Fridge & Dairy</div>
+        <div class="section-count" id="count-dairy">0/7</div>
+        <div class="section-toggle">▾</div>
+      </div>
+      <div class="items-list" id="items-dairy">
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Butter — 250g block</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Thickened cream — 300ml</div><div class="item-note">Garlic prawns</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Cream cheese — 1 tub</div><div class="item-note">Salmon wraps</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Parmesan — block or pre-grated</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Cheese — block or slices for bento</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Eggs — 6 pack</div><div class="item-note">Boiled eggs for bento</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">White wine — 1 bottle</div><div class="item-note">Prawns + chicken</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Red wine — 1 bottle (Cab Sauv or Merlot)</div><div class="item-note">Beef stew</div></div>
+      </div>
+    </div>
+
+    <div class="section" id="section-dry">
+      <div class="section-header" onclick="toggleSection('dry')">
+        <div class="section-icon">🥫</div>
+        <div class="section-title">Dry & Canned</div>
+        <div class="section-count" id="count-dry">0/11</div>
+        <div class="section-toggle">▾</div>
+      </div>
+      <div class="items-list" id="items-dry">
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Beef stock/broth — 750ml low sodium</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Chicken stock — 750ml</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Tomato paste — 1 small tin</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Plain flour</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Worcestershire sauce</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Dijon mustard</div><div class="item-note">Salmon tray bake</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Olive oil</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Jasmine or long grain rice — 750g</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Pasta — 500g</div><div class="item-note">Buttered thermos pasta</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Crackers or pita bread — 1 pack</div><div class="item-note">Bento boxes</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Wraps / tortillas — 1 pack</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Bread rolls — 6 pack</div><div class="item-note">Stew dunking + bento</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Hummus — 1 tub</div></div>
+      </div>
+    </div>
+
+    <div class="section" id="section-spices">
+      <div class="section-header" onclick="toggleSection('spices')">
+        <div class="section-icon">🧂</div>
+        <div class="section-title">Herbs & Spices <span style="font-size:11px;font-weight:400;color:#999">(check pantry first!)</span></div>
+        <div class="section-count" id="count-spices">0/6</div>
+        <div class="section-toggle">▾</div>
+      </div>
+      <div class="items-list" id="items-spices">
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Dried oregano</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Dried thyme</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Bay leaves</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Salt & pepper</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Paprika</div></div>
+        <div class="item" onclick="toggle(this)"><div class="checkbox"><span class="checkmark">✓</span></div><div class="item-text">Chilli flakes — optional</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MEALS PANEL -->
+  <div class="panel" id="panel-meals">
+
+    <div class="tip-box">
+      <div class="tip-icon">📅</div>
+      <div class="tip-text"><strong>Suggested order:</strong> Make the <strong>beef stew on Sunday</strong> — it tastes even better Monday. <strong>Buy prawns fresh</strong> on the day you plan to cook them.</div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-num">1</div>
+      <div class="meal-info">
+        <div class="meal-name">Classic Beef Stew</div>
+        <div class="meal-source">RecipeTin Eats · Dutch oven method</div>
+        <div class="meal-note">⏱ 2h 45m · Make on Sunday for Monday leftovers</div>
+        <a class="meal-link" href="https://www.recipetineats.com/beef-stew/" target="_blank">View Recipe ↗</a>
+      </div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-num">2</div>
+      <div class="meal-info">
+        <div class="meal-name">Garlic-Herb Butter Roast Chicken</div>
+        <div class="meal-source">RecipeTin Eats · With pan juice sauce</div>
+        <div class="meal-note">⏱ 1h 45m · Buy large — leftovers = 3 lunchboxes</div>
+        <a class="meal-link" href="https://www.recipetineats.com/roast-chicken/" target="_blank">View Recipe ↗</a>
+      </div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-num">3</div>
+      <div class="meal-info">
+        <div class="meal-name">Creamy Garlic Prawns</div>
+        <div class="meal-source">RecipeTin Eats · Served over rice</div>
+        <div class="meal-note">⏱ 20 mins · Buy prawns fresh on the day</div>
+        <a class="meal-link" href="https://www.recipetineats.com/creamy-garlic-prawns-shrimp/" target="_blank">View Recipe ↗</a>
+      </div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-num">4</div>
+      <div class="meal-info">
+        <div class="meal-name">Salmon Lemon Garlic Tray Bake</div>
+        <div class="meal-source">RecipeTin Eats · One pan, asparagus & tomatoes</div>
+        <div class="meal-note">⏱ 25 mins · No stovetop mess, great midweek option</div>
+        <a class="meal-link" href="https://www.recipetineats.com/lemon-garlic-salmon-tray-bake-easy-healthy/" target="_blank">View Recipe ↗</a>
+      </div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-num">5</div>
+      <div class="meal-info">
+        <div class="meal-name">Mediterranean Baked Chicken</div>
+        <div class="meal-source">RecipeTin Eats · One pan, potatoes included</div>
+        <div class="meal-note">⏱ 1h · Throw it all in and walk away</div>
+        <a class="meal-link" href="https://www.recipetineats.com/mediterranean-baked-chicken-dinner/" target="_blank">View Recipe ↗</a>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  // Count items per section
+  const sectionItems = {
+    meat: 7, veg: 12, herbs: 3, fruit: 1,
+    dairy: 8, dry: 13, spices: 6
+  };
+
+  function toggle(el) {
+    el.classList.toggle('checked');
+    updateProgress();
+    updateSectionCounts();
+    checkAllDone();
+  }
+
+  function updateProgress() {
+    const all = document.querySelectorAll('.item');
+    const checked = document.querySelectorAll('.item.checked');
+    const pct = all.length ? (checked.length / all.length * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressCount').textContent = checked.length + ' of ' + all.length + ' items';
+  }
+
+  function updateSectionCounts() {
+    const sections = ['meat','veg','herbs','fruit','dairy','dry','spices'];
+    sections.forEach(s => {
+      const items = document.querySelectorAll(`#items-${s} .item`);
+      const checked = document.querySelectorAll(`#items-${s} .item.checked`);
+      const el = document.getElementById(`count-${s}`);
+      if (el) el.textContent = checked.length + '/' + items.length;
+    });
+  }
+
+  function checkAllDone() {
+    // Market
+    const marketItems = document.querySelectorAll('#panel-market .item');
+    const marketChecked = document.querySelectorAll('#panel-market .item.checked');
+    const doneMkt = document.getElementById('done-market');
+    if (marketItems.length && marketChecked.length === marketItems.length) {
+      doneMkt.classList.add('show');
+    } else {
+      doneMkt.classList.remove('show');
+    }
+
+    // Pantry
+    const pantryItems = document.querySelectorAll('#panel-pantry .item');
+    const pantryChecked = document.querySelectorAll('#panel-pantry .item.checked');
+    const donePan = document.getElementById('done-pantry');
+    if (pantryItems.length && pantryChecked.length === pantryItems.length) {
+      donePan.classList.add('show');
+    } else {
+      donePan.classList.remove('show');
+    }
+  }
+
+  function toggleSection(id) {
+    document.getElementById('section-' + id).classList.toggle('collapsed');
+  }
+
+  function showPanel(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function resetAll() {
+    document.querySelectorAll('.item').forEach(i => i.classList.remove('checked'));
+    updateProgress();
+    updateSectionCounts();
+    checkAllDone();
+  }
+
+  // Init
+  updateProgress();
+  updateSectionCounts();
+</script>
+</body>
+</html>
