@@ -9,7 +9,6 @@
 <meta name="theme-color" content="#5c3d2e">
 <title>Family Meal Planner</title>
 
-<!-- PWA Manifest inline -->
 <script>
 const manifestData = {
   name: "Family Meal Planner",
@@ -28,7 +27,6 @@ const manifestURL = URL.createObjectURL(blob);
 document.write('<link rel="manifest" href="' + manifestURL + '">');
 </script>
 
-<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -46,191 +44,78 @@ document.write('<link rel="manifest" href="' + manifestURL + '">');
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background-color: var(--cream); font-family: 'Source Sans 3', sans-serif; color: var(--ink); min-height: 100vh; padding-bottom: calc(80px + var(--safe-bottom)); overscroll-behavior: none; }
 
-  body {
-    background-color: var(--cream);
-    font-family: 'Source Sans 3', sans-serif;
-    color: var(--ink);
-    min-height: 100vh;
-    padding-bottom: calc(80px + var(--safe-bottom));
-    overscroll-behavior: none;
-  }
-
-  /* ── HEADER ── */
-  .header {
-    background-color: var(--brown);
-    padding: calc(16px + var(--safe-top)) 24px 28px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .header::after {
-    content: '';
-    position: absolute;
-    bottom: -1px; left: 0; right: 0;
-    height: 20px;
-    background: var(--cream);
-    clip-path: ellipse(55% 100% at 50% 100%);
-  }
-
+  .header { background-color: var(--brown); padding: calc(16px + var(--safe-top)) 24px 28px; position: relative; overflow: hidden; }
+  .header::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 20px; background: var(--cream); clip-path: ellipse(55% 100% at 50% 100%); }
   .header-inner { max-width: 600px; margin: 0 auto; position: relative; z-index: 1; }
-
-  .header-tag {
-    font-size: 11px; font-weight: 600; letter-spacing: 3px;
-    text-transform: uppercase; color: var(--gold); margin-bottom: 8px;
-  }
-
-  h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(26px, 6vw, 42px);
-    font-weight: 900; color: var(--warm-white);
-    line-height: 1.05; margin-bottom: 14px;
-  }
-
+  .header-tag { font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(26px, 6vw, 42px); font-weight: 900; color: var(--warm-white); line-height: 1.05; margin-bottom: 14px; }
   .header-meta { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
-
   .progress-wrap { flex: 1; min-width: 140px; }
   .progress-label { font-size: 12px; color: var(--light-brown); margin-bottom: 5px; font-weight: 600; }
   .progress-bar { height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; overflow: hidden; }
   .progress-fill { height: 100%; background: var(--gold); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
   .progress-count { font-size: 11px; color: var(--mid-brown); margin-top: 4px; }
-
-  .header-actions { display: flex; gap: 8px; }
-
-  .btn-sm {
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.25);
-    color: var(--light-brown);
-    padding: 7px 14px; border-radius: 20px;
-    font-size: 12px; font-family: 'Source Sans 3', sans-serif;
-    font-weight: 600; cursor: pointer; letter-spacing: 0.5px;
-    transition: all 0.2s;
-  }
+  .btn-sm { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: var(--light-brown); padding: 7px 14px; border-radius: 20px; font-size: 12px; font-family: 'Source Sans 3', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.2s; }
   .btn-sm:hover { background: rgba(255,255,255,0.2); color: white; }
 
-  /* ── WEEK SELECTOR ── */
-  .week-bar {
-    background: var(--brown);
-    padding: 0 16px 16px;
-  }
-  .week-bar-inner {
-    max-width: 600px; margin: 0 auto;
-    display: flex; gap: 8px; overflow-x: auto;
-    scrollbar-width: none; -ms-overflow-style: none;
-  }
+  .week-bar { background: var(--brown); padding: 0 16px 16px; }
+  .week-bar-inner { max-width: 600px; margin: 0 auto; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
   .week-bar-inner::-webkit-scrollbar { display: none; }
-
-  .week-chip {
-    padding: 6px 16px; border-radius: 20px;
-    font-size: 12px; font-weight: 600;
-    white-space: nowrap; cursor: pointer;
-    border: 1.5px solid rgba(255,255,255,0.25);
-    color: var(--light-brown); background: transparent;
-    font-family: 'Source Sans 3', sans-serif;
-    transition: all 0.2s; flex-shrink: 0;
-  }
+  .week-chip { padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; border: 1.5px solid rgba(255,255,255,0.25); color: var(--light-brown); background: transparent; font-family: 'Source Sans 3', sans-serif; transition: all 0.2s; flex-shrink: 0; }
   .week-chip.active { background: var(--gold); border-color: var(--gold); color: var(--brown); }
-  .week-chip:hover:not(.active) { border-color: var(--gold); color: white; }
 
-  /* ── NAV TABS ── */
-  .nav-tabs {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: white;
-    border-top: 1px solid var(--light-brown);
-    display: flex;
-    padding-bottom: var(--safe-bottom);
-    z-index: 100;
-    box-shadow: 0 -4px 20px rgba(92,61,46,0.1);
-  }
-
-  .nav-tab {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 10px 4px; cursor: pointer;
-    border: none; background: transparent;
-    font-family: 'Source Sans 3', sans-serif;
-    color: var(--mid-brown); transition: all 0.2s;
-    gap: 3px;
-  }
+  .nav-tabs { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--light-brown); display: flex; padding-bottom: var(--safe-bottom); z-index: 100; box-shadow: 0 -4px 20px rgba(92,61,46,0.1); }
+  .nav-tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 2px; cursor: pointer; border: none; background: transparent; font-family: 'Source Sans 3', sans-serif; color: var(--mid-brown); transition: all 0.2s; gap: 3px; }
   .nav-tab.active { color: var(--brown); }
-  .nav-tab-icon { font-size: 20px; }
-  .nav-tab-label { font-size: 10px; font-weight: 600; letter-spacing: 0.3px; }
+  .nav-tab-icon { font-size: 18px; }
+  .nav-tab-label { font-size: 9px; font-weight: 600; letter-spacing: 0.3px; }
 
-  /* ── CONTENT ── */
-  .content { max-width: 600px; margin: 24px auto 0; padding: 0 16px; }
+  .status-bar { text-align: center; padding: 8px; font-size: 12px; color: var(--mid-brown); font-weight: 600; min-height: 30px; }
+  .status-bar.saving { color: var(--gold); }
+  .status-bar.saved { color: var(--sage); }
+  .status-bar.error { color: var(--rust); }
+
+  .content { max-width: 600px; margin: 0 auto; padding: 16px 16px 0; }
   .panel { display: none; }
   .panel.active { display: block; }
 
-  /* ── SECTION ── */
-  .section {
-    margin-bottom: 20px; background: white;
-    border-radius: 16px; overflow: hidden;
-    box-shadow: 0 2px 12px rgba(92,61,46,0.07);
-  }
+  .tip-box { background: linear-gradient(135deg, #fff8ee, #fff3e3); border: 1px solid var(--gold); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; display: flex; gap: 10px; align-items: flex-start; }
+  .tip-icon { font-size: 18px; flex-shrink: 0; }
+  .tip-text { font-size: 13px; color: var(--brown); line-height: 1.6; }
+  .tip-text strong { font-weight: 700; }
 
-  .section-header {
-    padding: 14px 18px; display: flex;
-    align-items: center; gap: 10px;
-    cursor: pointer; user-select: none;
-    border-bottom: 1px solid var(--light-brown);
-  }
-
+  .section { margin-bottom: 18px; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(92,61,46,0.07); }
+  .section-header { padding: 14px 18px; display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; border-bottom: 1px solid var(--light-brown); }
   .section-icon { font-size: 17px; width: 28px; text-align: center; }
   .section-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--brown); flex: 1; }
   .section-count { font-size: 11px; color: var(--mid-brown); font-weight: 600; background: var(--light-brown); padding: 3px 8px; border-radius: 10px; }
   .section-toggle { font-size: 12px; color: var(--mid-brown); transition: transform 0.2s; }
   .section.collapsed .section-toggle { transform: rotate(-90deg); }
   .section.collapsed .items-list { display: none; }
-
   .items-list { padding: 6px 0; }
 
-  /* ── ITEM ── */
-  .item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 11px 18px; cursor: pointer;
-    transition: background 0.15s;
-    border-left: 3px solid transparent;
-  }
+  .item { display: flex; align-items: center; gap: 12px; padding: 11px 18px; cursor: pointer; transition: background 0.15s; border-left: 3px solid transparent; }
   .item:hover { background: var(--warm-white); }
   .item.checked { background: #f0f7f1; border-left-color: var(--sage); }
-
-  .checkbox {
-    width: 22px; height: 22px; border-radius: 6px;
-    border: 2px solid var(--mid-brown);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; transition: all 0.2s; background: white;
-  }
+  .checkbox { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--mid-brown); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; background: white; }
   .item.checked .checkbox { background: var(--sage); border-color: var(--sage); }
   .checkmark { display: none; color: white; font-size: 13px; font-weight: 700; }
   .item.checked .checkmark { display: block; }
-
   .item-text { flex: 1; font-size: 14px; color: var(--ink); line-height: 1.3; transition: all 0.2s; }
   .item.checked .item-text { text-decoration: line-through; color: var(--mid-brown); }
+  .item-note { font-size: 11px; color: var(--rust); font-weight: 600; background: rgba(192,82,42,0.08); padding: 2px 7px; border-radius: 8px; white-space: nowrap; }
 
-  .item-note {
-    font-size: 11px; color: var(--rust); font-weight: 600;
-    background: rgba(192,82,42,0.08); padding: 2px 7px;
-    border-radius: 8px; white-space: nowrap;
-  }
+  .all-done { display: none; text-align: center; padding: 36px 20px; background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(92,61,46,0.08); margin-bottom: 20px; }
+  .all-done.show { display: block; }
+  .all-done-emoji { font-size: 44px; margin-bottom: 10px; }
+  .all-done h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--brown); margin-bottom: 6px; }
+  .all-done p { font-size: 13px; color: var(--mid-brown); }
 
-  /* ── MEAL CARDS ── */
-  .meal-card {
-    background: white; border-radius: 14px;
-    padding: 16px 18px; margin-bottom: 12px;
-    box-shadow: 0 2px 10px rgba(92,61,46,0.07);
-    display: flex; gap: 12px; align-items: flex-start;
-  }
-
-  .meal-num {
-    width: 34px; height: 34px; background: var(--brown);
-    color: white; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Playfair Display', serif; font-size: 15px;
-    font-weight: 700; flex-shrink: 0;
-  }
-
+  .meal-card { background: white; border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(92,61,46,0.07); display: flex; gap: 12px; }
+  .meal-num { width: 34px; height: 34px; background: var(--brown); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; flex-shrink: 0; }
   .meal-info { flex: 1; }
   .meal-name { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
   .meal-source { font-size: 11px; color: var(--mid-brown); font-weight: 600; margin-bottom: 3px; }
@@ -238,87 +123,45 @@ document.write('<link rel="manifest" href="' + manifestURL + '">');
   .meal-link { font-size: 12px; color: var(--sage); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 3px; margin-top: 5px; }
   .meal-link:hover { text-decoration: underline; }
 
-  /* ── LUNCHBOX CARDS ── */
-  .lunch-card {
-    background: white; border-radius: 14px;
-    padding: 14px 18px; margin-bottom: 10px;
-    box-shadow: 0 2px 10px rgba(92,61,46,0.07);
-    border-left: 4px solid var(--gold);
-  }
-  .lunch-name { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
-  .lunch-meta { display: flex; gap: 8px; flex-wrap: wrap; }
-  .lunch-tag {
-    font-size: 11px; font-weight: 600; padding: 2px 8px;
-    border-radius: 8px;
-  }
+  /* SIDES */
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--mid-brown); padding: 4px 4px 8px; margin-top: 4px; }
+  .side-card { background: white; border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(92,61,46,0.07); border-left: 4px solid var(--sage); }
+  .side-name { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .side-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .side-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 8px; }
+  .side-tag.category { background: rgba(122,158,126,0.15); color: var(--sage); }
+  .side-tag.time { background: rgba(212,168,83,0.15); color: #9a7020; }
+  .side-tag.pairs { background: rgba(92,61,46,0.1); color: var(--brown); }
+  .side-steps { list-style: none; padding: 0; }
+  .side-steps li { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; font-size: 13px; color: var(--ink); line-height: 1.5; border-bottom: 1px solid var(--light-brown); }
+  .side-steps li:last-child { border-bottom: none; }
+  .step-num { width: 20px; height: 20px; background: var(--brown); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+  .side-notes { font-size: 12px; color: var(--mid-brown); font-style: italic; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--light-brown); }
+
+  .lunch-card { background: white; border-radius: 14px; padding: 14px 18px; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(92,61,46,0.07); border-left: 4px solid var(--gold); }
+  .lunch-name { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .lunch-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 5px; }
+  .lunch-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 8px; }
   .lunch-tag.style { background: rgba(122,158,126,0.15); color: var(--sage); }
   .lunch-tag.based { background: rgba(212,168,83,0.15); color: #9a7020; }
+  .lunch-notes { font-size: 12px; color: var(--mid-brown); line-height: 1.5; }
 
-  /* ── TIP BOX ── */
-  .tip-box {
-    background: linear-gradient(135deg, #fff8ee, #fff3e3);
-    border: 1px solid var(--gold); border-radius: 14px;
-    padding: 14px 16px; margin-bottom: 18px;
-    display: flex; gap: 10px; align-items: flex-start;
-  }
-  .tip-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-  .tip-text { font-size: 13px; color: var(--brown); line-height: 1.6; }
-  .tip-text strong { font-weight: 700; }
-
-  /* ── STATUS ── */
-  .status-bar {
-    text-align: center; padding: 10px;
-    font-size: 12px; color: var(--mid-brown);
-    font-weight: 600;
-  }
-  .status-bar.saving { color: var(--gold); }
-  .status-bar.saved { color: var(--sage); }
-  .status-bar.error { color: var(--rust); }
-
-  /* ── LOADING ── */
-  .loading {
-    text-align: center; padding: 40px 20px;
-    color: var(--mid-brown); font-size: 14px;
-  }
-  .spinner {
-    width: 32px; height: 32px; border: 3px solid var(--light-brown);
-    border-top-color: var(--brown); border-radius: 50%;
-    animation: spin 0.8s linear infinite; margin: 0 auto 12px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ── ALL DONE ── */
-  .all-done {
-    display: none; text-align: center; padding: 36px 20px;
-    background: white; border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(92,61,46,0.08); margin-bottom: 20px;
-  }
-  .all-done.show { display: block; }
-  .all-done-emoji { font-size: 44px; margin-bottom: 10px; }
-  .all-done h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--brown); margin-bottom: 6px; }
-  .all-done p { font-size: 13px; color: var(--mid-brown); }
-
-  /* ── RECIPE BOOK ── */
-  .recipe-card {
-    background: white; border-radius: 14px;
-    padding: 16px 18px; margin-bottom: 12px;
-    box-shadow: 0 2px 10px rgba(92,61,46,0.07);
-  }
-  .recipe-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .recipe-card { background: white; border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(92,61,46,0.07); }
+  .recipe-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 8px; }
   .recipe-name { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--ink); }
-  .recipe-week { font-size: 11px; color: white; background: var(--brown); padding: 2px 8px; border-radius: 8px; font-weight: 600; }
+  .recipe-week { font-size: 11px; color: white; background: var(--brown); padding: 2px 8px; border-radius: 8px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
   .recipe-source { font-size: 12px; color: var(--mid-brown); margin-bottom: 4px; }
   .recipe-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
-  .recipe-tag {
-    font-size: 11px; font-weight: 600; padding: 2px 8px;
-    border-radius: 8px; background: var(--light-brown); color: var(--brown);
-  }
+  .recipe-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 8px; background: var(--light-brown); color: var(--brown); }
   .recipe-tag.kid { background: rgba(122,158,126,0.2); color: var(--sage); }
+
+  .loading { text-align: center; padding: 40px 20px; color: var(--mid-brown); font-size: 14px; }
+  .spinner { width: 32px; height: 32px; border: 3px solid var(--light-brown); border-top-color: var(--brown); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div class="header-inner">
     <div class="header-tag">🍽️ Family Meal Planner</div>
@@ -329,31 +172,23 @@ document.write('<link rel="manifest" href="' + manifestURL + '">');
         <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
         <div class="progress-count" id="progressCount">Loading...</div>
       </div>
-      <div class="header-actions">
-        <button class="btn-sm" onclick="resetWeek()">↺ Reset</button>
-      </div>
+      <button class="btn-sm" onclick="resetWeek()">↺ Reset</button>
     </div>
   </div>
 </div>
 
-<!-- WEEK SELECTOR -->
 <div class="week-bar">
   <div class="week-bar-inner" id="weekChips">
     <button class="week-chip active" onclick="selectWeek(1, this)">Week 1</button>
   </div>
 </div>
 
-<!-- STATUS -->
 <div class="status-bar" id="statusBar"></div>
 
-<!-- CONTENT -->
 <div class="content">
 
-  <!-- SHOPPING PANEL -->
   <div class="panel active" id="panel-shopping">
-    <div id="shoppingContent">
-      <div class="loading"><div class="spinner"></div>Loading shopping list...</div>
-    </div>
+    <div id="shoppingContent"><div class="loading"><div class="spinner"></div>Loading shopping list...</div></div>
     <div class="all-done" id="allDone">
       <div class="all-done-emoji">🎉</div>
       <h3>Shopping done!</h3>
@@ -361,134 +196,171 @@ document.write('<link rel="manifest" href="' + manifestURL + '">');
     </div>
   </div>
 
-  <!-- MEALS PANEL -->
   <div class="panel" id="panel-meals">
     <div class="tip-box">
       <div class="tip-icon">📅</div>
       <div class="tip-text"><strong>Tip:</strong> Make the <strong>beef stew Sunday</strong> — better on Monday. Buy <strong>prawns fresh</strong> on the day you cook them.</div>
     </div>
-    <div id="mealsContent">
-      <div class="loading"><div class="spinner"></div>Loading meals...</div>
-    </div>
+    <div id="mealsContent"><div class="loading"><div class="spinner"></div>Loading meals...</div></div>
   </div>
 
-  <!-- LUNCHBOX PANEL -->
+  <div class="panel" id="panel-sides">
+    <div class="tip-box">
+      <div class="tip-icon">🥗</div>
+      <div class="tip-text">Your growing collection of <strong>sides & accompaniments</strong> — saved with steps so you can cook straight from the app.</div>
+    </div>
+    <div id="sidesContent"><div class="loading"><div class="spinner"></div>Loading sides...</div></div>
+  </div>
+
   <div class="panel" id="panel-lunchbox">
     <div class="tip-box">
       <div class="tip-icon">💡</div>
       <div class="tip-text"><strong>Thermos tip:</strong> Pre-fill with boiling water for 5 mins before adding food — keeps it hot until lunch!</div>
     </div>
-    <div id="lunchboxContent">
-      <div class="loading"><div class="spinner"></div>Loading lunchbox ideas...</div>
-    </div>
+    <div id="lunchboxContent"><div class="loading"><div class="spinner"></div>Loading lunchbox ideas...</div></div>
   </div>
 
-  <!-- RECIPE BOOK PANEL -->
   <div class="panel" id="panel-recipes">
     <div class="tip-box">
       <div class="tip-icon">📖</div>
-      <div class="tip-text">Your <strong>growing family recipe book</strong> — every meal you pick gets saved here automatically, week by week.</div>
+      <div class="tip-text">Your <strong>growing family recipe book</strong> — every meal picked gets saved here automatically.</div>
     </div>
-    <div id="recipesContent">
-      <div class="loading"><div class="spinner"></div>Loading recipe book...</div>
-    </div>
+    <div id="recipesContent"><div class="loading"><div class="spinner"></div>Loading recipe book...</div></div>
   </div>
 
 </div>
 
-<!-- BOTTOM NAV -->
 <nav class="nav-tabs">
   <button class="nav-tab active" onclick="showPanel('shopping', this)">
-    <span class="nav-tab-icon">🛒</span>
-    <span class="nav-tab-label">Shopping</span>
+    <span class="nav-tab-icon">🛒</span><span class="nav-tab-label">Shopping</span>
   </button>
   <button class="nav-tab" onclick="showPanel('meals', this)">
-    <span class="nav-tab-icon">🍽️</span>
-    <span class="nav-tab-label">Meals</span>
+    <span class="nav-tab-icon">🍽️</span><span class="nav-tab-label">Meals</span>
+  </button>
+  <button class="nav-tab" onclick="showPanel('sides', this)">
+    <span class="nav-tab-icon">🥗</span><span class="nav-tab-label">Sides</span>
   </button>
   <button class="nav-tab" onclick="showPanel('lunchbox', this)">
-    <span class="nav-tab-icon">🎒</span>
-    <span class="nav-tab-label">Lunchbox</span>
+    <span class="nav-tab-icon">🎒</span><span class="nav-tab-label">Lunchbox</span>
   </button>
   <button class="nav-tab" onclick="showPanel('recipes', this)">
-    <span class="nav-tab-icon">📖</span>
-    <span class="nav-tab-label">Recipes</span>
+    <span class="nav-tab-icon">📖</span><span class="nav-tab-label">Recipes</span>
   </button>
 </nav>
 
 <script>
-// ─────────────────────────────────────────
-// CONFIG — Replace YOUR_ANON_KEY_HERE with your actual Supabase anon key
-// ─────────────────────────────────────────
 const SUPABASE_URL = 'https://uwomdntwazcflikqnxeo.supabase.co'
-const SUPABASE_ANON_KEY = 'sb_publishable_IOZh6QXzzwShC9FXJ6cabQ_8U11IdJa'
-
+const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE'
 const { createClient } = supabase
 const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-// ─────────────────────────────────────────
-// WEEK 1 SEED DATA
-// ─────────────────────────────────────────
 const WEEK1_MEALS = [
   { name: 'Classic Beef Stew', source: 'RecipeTin Eats', url: 'https://www.recipetineats.com/beef-stew/', category: 'Stew', notes: 'Dutch oven method — make Sunday for Monday', cook_time: '2h 45m', kid_friendly: true },
   { name: 'Garlic-Herb Butter Roast Chicken', source: 'RecipeTin Eats', url: 'https://www.recipetineats.com/roast-chicken/', category: 'Roast', notes: 'Buy ~2kg — leftovers power 3 lunchboxes', cook_time: '1h 45m', kid_friendly: true },
   { name: 'Creamy Garlic Prawns', source: 'RecipeTin Eats', url: 'https://www.recipetineats.com/creamy-garlic-prawns-shrimp/', category: 'Seafood', notes: 'Served over rice — buy prawns fresh day-of', cook_time: '20 mins', kid_friendly: true },
   { name: 'Salmon Lemon Garlic Tray Bake', source: 'RecipeTin Eats', url: 'https://www.recipetineats.com/lemon-garlic-salmon-tray-bake-easy-healthy/', category: 'Fish', notes: 'One pan, asparagus & tomatoes — no stovetop mess', cook_time: '25 mins', kid_friendly: true },
-  { name: 'Mediterranean Baked Chicken', source: 'RecipeTin Eats', url: 'https://www.recipetineats.com/mediterranean-baked-chicken-dinner/', category: 'Chicken', notes: 'One pan, potatoes included — throw it all in and walk away', cook_time: '1h', kid_friendly: true }
+  { name: 'Mediterranean Baked Chicken', source: 'RecipeTin Eats', url: 'https://www.recipetineats.com/mediterranean-baked-chicken-dinner/', category: 'Chicken', notes: 'One pan, potatoes included — throw it all in and walk away', cook_time: '1h', kid_friendly: true },
+  { name: 'Parmesan Crumbed Flathead', source: 'RecipeTin Eats', url: 'https://www.recipetineats.com/healthy-parmesan-garlic-crumbed-fish/', category: 'Fish', notes: 'Emergency fish recipe — crumb: parmesan + breadcrumbs + garlic + oil', cook_time: '10 mins', kid_friendly: true }
+]
+
+const WEEK1_SIDES = [
+  {
+    name: 'Smashed Crispy Potatoes',
+    category: 'Potato',
+    cook_time: '25 mins',
+    notes: 'Best with already-cooked leftover potatoes. Get these in the oven first — they take the longest.',
+    pairs_with: ['Parmesan Crumbed Flathead', 'Garlic-Herb Butter Roast Chicken'],
+    steps: [
+      'Preheat oven to 220°C.',
+      'Place cooked potatoes on a lined baking tray.',
+      'Smash each potato firmly with a fork or bottom of a glass.',
+      'Drizzle generously with olive oil, season with salt & pepper.',
+      'Roast 20–25 mins until golden and crispy on the edges.',
+      'Serve immediately — they lose their crunch quickly!'
+    ]
+  },
+  {
+    name: 'Garlic Butter Broccoli & Asparagus',
+    category: 'Vegetable',
+    cook_time: '8 mins',
+    notes: 'Cook both veg in the same pan to save washing up. The garlic butter ties beautifully with the parmesan fish.',
+    pairs_with: ['Parmesan Crumbed Flathead', 'Salmon Lemon Garlic Tray Bake'],
+    steps: [
+      'Bring a pot of salted water to the boil.',
+      'Blanch broccoli florets and asparagus together for 2 mins.',
+      'Drain well and shake off excess water.',
+      'Heat the same pan on high, add a knob of butter and 1 crushed garlic clove.',
+      'Add drained veg and toss on high heat for 2 mins until slightly charred.',
+      'Squeeze over fresh lemon juice, season with salt & pepper. Serve immediately.'
+    ]
+  },
+  {
+    name: 'Quick Cos-Style Salad',
+    category: 'Salad',
+    cook_time: '2 mins',
+    notes: 'Make right before serving so it stays crisp. Great alongside any fish or chicken dish.',
+    pairs_with: ['Parmesan Crumbed Flathead', 'Creamy Garlic Prawns', 'Mediterranean Baked Chicken'],
+    steps: [
+      'Tear lettuce leaves into a bowl.',
+      'Thinly slice white onion and add to the bowl.',
+      'Drizzle with good olive oil.',
+      'Add a small splash of white wine vinegar or lemon juice.',
+      'Season with salt & pepper, toss gently and serve immediately.'
+    ]
+  }
 ]
 
 const WEEK1_SHOPPING = [
-  // Market - Meat & Seafood
   { week_number: 1, section: '🥩 Meat & Seafood', item_text: 'Chuck beef — 1.2kg', item_note: 'Stew' },
   { week_number: 1, section: '🥩 Meat & Seafood', item_text: 'Whole chicken — ~2kg', item_note: 'Roast + lunchboxes' },
   { week_number: 1, section: '🥩 Meat & Seafood', item_text: 'Chicken thighs or pieces — 6–8 pieces', item_note: 'Med chicken' },
   { week_number: 1, section: '🥩 Meat & Seafood', item_text: 'Raw prawns — 500–600g, peeled & deveined', item_note: 'Buy fresh day-of' },
   { week_number: 1, section: '🥩 Meat & Seafood', item_text: 'Salmon fillets — 4 x 180g, skin on', item_note: 'Tray bake' },
+  { week_number: 1, section: '🥩 Meat & Seafood', item_text: 'Flathead fillets — 600–800g', item_note: 'Parmesan crumbed' },
   { week_number: 1, section: '🥩 Meat & Seafood', item_text: 'Ham or deli meat slices — 200g', item_note: 'Lunchboxes' },
   { week_number: 1, section: '🥩 Meat & Seafood', item_text: 'Salami — small pack', item_note: 'Grazing box' },
-  // Market - Vegetables
   { week_number: 1, section: '🥕 Vegetables', item_text: 'Baby potatoes — 900g total', item_note: 'Stew + Med chicken' },
   { week_number: 1, section: '🥕 Vegetables', item_text: 'Carrots — 5–6 large', item_note: 'Stew + soup' },
   { week_number: 1, section: '🥕 Vegetables', item_text: 'Celery — 1 bunch', item_note: 'Stew + soup' },
   { week_number: 1, section: '🥕 Vegetables', item_text: 'Onions — 4 large', item_note: null },
+  { week_number: 1, section: '🥕 Vegetables', item_text: 'White onion — 1', item_note: 'Cos salad' },
   { week_number: 1, section: '🥕 Vegetables', item_text: 'Garlic — 2–3 whole bulbs', item_note: 'Used in everything!' },
   { week_number: 1, section: '🥕 Vegetables', item_text: 'Cherry tomatoes — 2 punnets', item_note: 'Tray bake + Med chicken' },
-  { week_number: 1, section: '🥕 Vegetables', item_text: 'Asparagus — 1–2 bunches', item_note: 'Tray bake' },
+  { week_number: 1, section: '🥕 Vegetables', item_text: 'Asparagus — 1–2 bunches', item_note: 'Tray bake + garlic butter side' },
+  { week_number: 1, section: '🥕 Vegetables', item_text: 'Broccoli — 1 large head', item_note: 'Garlic butter side' },
   { week_number: 1, section: '🥕 Vegetables', item_text: 'Red onion — 1', item_note: 'Med chicken' },
+  { week_number: 1, section: '🥕 Vegetables', item_text: 'Lettuce — 1 cos or iceberg', item_note: 'Cos salad' },
   { week_number: 1, section: '🥕 Vegetables', item_text: 'Baby spinach — 1 bag', item_note: 'Wraps + bento' },
   { week_number: 1, section: '🥕 Vegetables', item_text: 'Cucumber — 2', item_note: 'Wraps + bento' },
   { week_number: 1, section: '🥕 Vegetables', item_text: 'Baby carrots — 1 bag', item_note: 'Bento snacking' },
   { week_number: 1, section: '🥕 Vegetables', item_text: 'Lemons — 6–7', item_note: 'Used across all recipes' },
-  // Market - Herbs
   { week_number: 1, section: '🌿 Fresh Herbs', item_text: 'Fresh rosemary — 1 bunch', item_note: null },
   { week_number: 1, section: '🌿 Fresh Herbs', item_text: 'Fresh thyme — 1 bunch', item_note: null },
   { week_number: 1, section: '🌿 Fresh Herbs', item_text: 'Fresh parsley — 1 bunch', item_note: null },
-  // Market - Fruit
   { week_number: 1, section: '🍇 Fruit', item_text: 'Grapes or strawberries — 1 punnet', item_note: 'Grazing box' },
-  // Pantry - Dairy
   { week_number: 1, section: '🧈 Fridge & Dairy', item_text: 'Butter — 250g block', item_note: null },
   { week_number: 1, section: '🧈 Fridge & Dairy', item_text: 'Thickened cream — 300ml', item_note: 'Garlic prawns' },
   { week_number: 1, section: '🧈 Fridge & Dairy', item_text: 'Cream cheese — 1 tub', item_note: 'Salmon wraps' },
-  { week_number: 1, section: '🧈 Fridge & Dairy', item_text: 'Parmesan — block or pre-grated', item_note: null },
+  { week_number: 1, section: '🧈 Fridge & Dairy', item_text: 'Parmesan — block or pre-grated', item_note: 'Also for flathead crumb' },
   { week_number: 1, section: '🧈 Fridge & Dairy', item_text: 'Cheese — block or slices for bento', item_note: null },
   { week_number: 1, section: '🧈 Fridge & Dairy', item_text: 'Eggs — 6 pack', item_note: 'Boiled eggs for bento' },
   { week_number: 1, section: '🧈 Fridge & Dairy', item_text: 'White wine — 1 bottle', item_note: 'Prawns + chicken' },
   { week_number: 1, section: '🧈 Fridge & Dairy', item_text: 'Red wine — 1 bottle (Cab Sauv or Merlot)', item_note: 'Beef stew' },
-  // Pantry - Dry
   { week_number: 1, section: '🥫 Dry & Canned', item_text: 'Beef stock/broth — 750ml low sodium', item_note: null },
   { week_number: 1, section: '🥫 Dry & Canned', item_text: 'Chicken stock — 750ml', item_note: null },
   { week_number: 1, section: '🥫 Dry & Canned', item_text: 'Tomato paste — 1 small tin', item_note: null },
   { week_number: 1, section: '🥫 Dry & Canned', item_text: 'Plain flour', item_note: null },
+  { week_number: 1, section: '🥫 Dry & Canned', item_text: 'Breadcrumbs — panko preferred', item_note: 'Flathead crumb' },
   { week_number: 1, section: '🥫 Dry & Canned', item_text: 'Worcestershire sauce', item_note: null },
   { week_number: 1, section: '🥫 Dry & Canned', item_text: 'Dijon mustard', item_note: 'Salmon tray bake' },
   { week_number: 1, section: '🥫 Dry & Canned', item_text: 'Olive oil', item_note: null },
+  { week_number: 1, section: '🥫 Dry & Canned', item_text: 'White wine vinegar', item_note: 'Cos salad dressing' },
   { week_number: 1, section: '🥫 Dry & Canned', item_text: 'Jasmine or long grain rice — 750g', item_note: null },
   { week_number: 1, section: '🥫 Dry & Canned', item_text: 'Pasta — 500g', item_note: 'Buttered thermos pasta' },
   { week_number: 1, section: '🥫 Dry & Canned', item_text: 'Crackers or pita bread — 1 pack', item_note: 'Bento boxes' },
   { week_number: 1, section: '🥫 Dry & Canned', item_text: 'Wraps / tortillas — 1 pack', item_note: null },
   { week_number: 1, section: '🥫 Dry & Canned', item_text: 'Bread rolls — 6 pack', item_note: 'Stew dunking + bento' },
   { week_number: 1, section: '🥫 Dry & Canned', item_text: 'Hummus — 1 tub', item_note: null },
-  // Pantry - Spices
   { week_number: 1, section: '🧂 Herbs & Spices', item_text: 'Dried oregano', item_note: 'Check pantry first' },
   { week_number: 1, section: '🧂 Herbs & Spices', item_text: 'Dried thyme', item_note: 'Check pantry first' },
   { week_number: 1, section: '🧂 Herbs & Spices', item_text: 'Bay leaves', item_note: 'Check pantry first' },
@@ -498,114 +370,62 @@ const WEEK1_SHOPPING = [
 ]
 
 const WEEK1_LUNCHBOX = [
-  { name: 'Beef Stew in Thermos', style: 'Thermos Leftover', based_on: 'Dinner #1 — Beef Stew', notes: 'Heat piping hot, pre-warm thermos with boiling water for 5 mins first. Add a bread roll on the side.' },
-  { name: 'Shredded Roast Chicken Rice Bowl', style: 'Thermos Leftover', based_on: 'Dinner #2 — Roast Chicken', notes: 'Pull leftover chicken off bone, mix with butter and pan juices, serve over rice in thermos.' },
-  { name: 'Mediterranean Chicken & Potato Thermos', style: 'Thermos Leftover', based_on: 'Dinner #5 — Med Chicken', notes: 'Chop up leftover chicken and potatoes, reheat with splash of stock. Add parmesan on top.' },
-  { name: 'Roast Chicken Wrap', style: 'Wrap', based_on: 'Dinner #2 — Roast Chicken', notes: 'Shredded roast chicken + avocado + cheese + baby spinach in a wrap.' },
-  { name: 'Salmon Cream Cheese Wrap', style: 'Wrap', based_on: 'Dinner #4 — Salmon', notes: 'Leftover flaked salmon + cream cheese + cucumber. Great gentle seafood intro for kids.' },
+  { name: 'Beef Stew in Thermos', style: 'Thermos Leftover', based_on: 'Dinner — Beef Stew', notes: 'Heat piping hot, pre-warm thermos with boiling water for 5 mins first. Add a bread roll on the side.' },
+  { name: 'Shredded Roast Chicken Rice Bowl', style: 'Thermos Leftover', based_on: 'Dinner — Roast Chicken', notes: 'Pull leftover chicken off bone, mix with butter and pan juices, serve over rice in thermos.' },
+  { name: 'Mediterranean Chicken & Potato Thermos', style: 'Thermos Leftover', based_on: 'Dinner — Med Chicken', notes: 'Chop up leftover chicken and potatoes, reheat with splash of stock. Add parmesan on top.' },
+  { name: 'Roast Chicken Wrap', style: 'Wrap', based_on: 'Dinner — Roast Chicken', notes: 'Shredded roast chicken + avocado + cheese + baby spinach in a wrap.' },
+  { name: 'Salmon Cream Cheese Wrap', style: 'Wrap', based_on: 'Dinner — Salmon', notes: 'Leftover flaked salmon + cream cheese + cucumber. Great gentle seafood intro for kids.' },
   { name: 'The Protein Bento Box', style: 'Bento', based_on: 'Any week', notes: 'Sliced chicken or lamb, cheese cubes, cherry tomatoes, crackers, cucumber sticks, hummus.' },
   { name: 'The Grazing Box', style: 'Bento', based_on: 'Any week', notes: 'Boiled egg halves, rolled ham or salami, baby carrots & cucumber, cheese, grapes, crackers.' },
   { name: 'Buttered Pasta with Parmesan', style: 'Fresh Thermos', based_on: 'Pantry staple', notes: '10 mins in morning. Pasta + butter + parmesan + pinch of salt. Add hidden peas or zucchini.' },
-  { name: 'Chicken & Rice Soup', style: 'Fresh Thermos', based_on: 'Dinner #2 — Roast Chicken', notes: 'Leftover chicken + chicken stock + rice + carrot. 15 mins on stove, into thermos.' }
+  { name: 'Chicken & Rice Soup', style: 'Fresh Thermos', based_on: 'Dinner — Roast Chicken', notes: 'Leftover chicken + chicken stock + rice + carrot. 15 mins on stove, into thermos.' }
 ]
 
-// ─────────────────────────────────────────
-// STATE
-// ─────────────────────────────────────────
 let currentWeek = 1
 let shoppingItems = []
-let checkedIds = new Set()
 
-// ─────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────
 async function init() {
-  await seedWeek1IfNeeded()
-  await loadShoppingList()
-  await loadMeals()
-  await loadLunchbox()
-  await loadRecipeBook()
+  await seedIfNeeded()
+  await Promise.all([loadShoppingList(), loadMeals(), loadSides(), loadLunchbox(), loadRecipeBook()])
 }
 
-// ─────────────────────────────────────────
-// SEED WEEK 1 DATA (only runs once)
-// ─────────────────────────────────────────
-async function seedWeek1IfNeeded() {
-  // Check if meals already exist
+async function seedIfNeeded() {
   const { data: existing } = await db.from('meals').select('id').limit(1)
   if (existing && existing.length > 0) return
-
-  setStatus('Setting up your meal planner for the first time...', 'saving')
-
-  // Insert meals and get their IDs
+  setStatus('Setting up for the first time...', 'saving')
   const { data: insertedMeals } = await db.from('meals').insert(WEEK1_MEALS).select()
-
-  // Insert weekly plan links
   if (insertedMeals) {
-    const plans = insertedMeals.map((meal, i) => ({
-      week_number: 1,
-      week_label: 'Week 1',
-      meal_id: meal.id
-    }))
-    await db.from('weekly_plans').insert(plans)
+    await db.from('weekly_plans').insert(insertedMeals.map(m => ({ week_number: 1, week_label: 'Week 1', meal_id: m.id })))
   }
-
-  // Insert shopping items
   await db.from('shopping_items').insert(WEEK1_SHOPPING)
-
-  // Insert lunchbox ideas
   await db.from('lunchbox_ideas').insert(WEEK1_LUNCHBOX)
-
-  setStatus('Week 1 data loaded!', 'saved')
+  await db.from('sides').insert(WEEK1_SIDES)
+  setStatus('All set!', 'saved')
   setTimeout(() => setStatus(''), 2000)
 }
 
-// ─────────────────────────────────────────
-// SHOPPING LIST
-// ─────────────────────────────────────────
 async function loadShoppingList() {
-  const { data, error } = await db
-    .from('shopping_items')
-    .select('*')
-    .eq('week_number', currentWeek)
-    .order('section')
-
-  if (error) { setStatus('Error loading shopping list', 'error'); return }
-
+  const { data, error } = await db.from('shopping_items').select('*').eq('week_number', currentWeek).order('section')
+  if (error) { setStatus('Error loading list', 'error'); return }
   shoppingItems = data || []
-
-  // Group by section
   const sections = {}
-  shoppingItems.forEach(item => {
-    if (!sections[item.section]) sections[item.section] = []
-    sections[item.section].push(item)
-  })
-
+  shoppingItems.forEach(item => { if (!sections[item.section]) sections[item.section] = []; sections[item.section].push(item) })
   const container = document.getElementById('shoppingContent')
-  container.innerHTML = ''
-
-  // Market tip
-  container.innerHTML += `
-    <div class="tip-box">
-      <div class="tip-icon">💡</div>
-      <div class="tip-text"><strong>Market tip:</strong> Buy a <strong>larger ~2kg chicken</strong> for the roast — leftovers power 3 lunchboxes. Make a <strong>double batch of beef stew</strong> — it freezes brilliantly.</div>
-    </div>`
-
+  container.innerHTML = `<div class="tip-box"><div class="tip-icon">💡</div><div class="tip-text"><strong>Market tip:</strong> Buy a <strong>larger ~2kg chicken</strong> — leftovers power 3 lunchboxes. Make a <strong>double batch of beef stew</strong> — it freezes brilliantly.</div></div>`
   Object.entries(sections).forEach(([section, items]) => {
-    const sectionId = section.replace(/[^a-z0-9]/gi, '')
+    const sId = section.replace(/[^a-z0-9]/gi, '')
     const checkedCount = items.filter(i => i.is_checked).length
-
     container.innerHTML += `
-      <div class="section" id="sec-${sectionId}">
-        <div class="section-header" onclick="toggleSection('${sectionId}')">
+      <div class="section" id="sec-${sId}">
+        <div class="section-header" onclick="toggleSection('${sId}')">
           <div class="section-icon">${section.split(' ')[0]}</div>
           <div class="section-title">${section.substring(section.indexOf(' ')+1)}</div>
-          <div class="section-count" id="cnt-${sectionId}">${checkedCount}/${items.length}</div>
+          <div class="section-count" id="cnt-${sId}">${checkedCount}/${items.length}</div>
           <div class="section-toggle">▾</div>
         </div>
-        <div class="items-list" id="items-${sectionId}">
+        <div class="items-list" id="items-${sId}">
           ${items.map(item => `
-            <div class="item ${item.is_checked ? 'checked' : ''}" onclick="toggleItem('${item.id}', '${sectionId}', this)">
+            <div class="item ${item.is_checked ? 'checked' : ''}" onclick="toggleItem('${item.id}', '${sId}', this)">
               <div class="checkbox"><span class="checkmark">✓</span></div>
               <div class="item-text">${item.item_text}</div>
               ${item.item_note ? `<div class="item-note">${item.item_note}</div>` : ''}
@@ -613,31 +433,18 @@ async function loadShoppingList() {
         </div>
       </div>`
   })
-
   updateProgress()
+  checkAllDone()
 }
 
 async function toggleItem(id, sectionId, el) {
   const isChecked = !el.classList.contains('checked')
   el.classList.toggle('checked')
-
   setStatus('Saving...', 'saving')
-
-  const { error } = await db
-    .from('shopping_items')
-    .update({ is_checked: isChecked })
-    .eq('id', id)
-
-  if (error) {
-    el.classList.toggle('checked') // revert
-    setStatus('Error saving — check connection', 'error')
-    return
-  }
-
-  // Update local data
+  const { error } = await db.from('shopping_items').update({ is_checked: isChecked }).eq('id', id)
+  if (error) { el.classList.toggle('checked'); setStatus('Error saving', 'error'); return }
   const item = shoppingItems.find(i => i.id === id)
   if (item) item.is_checked = isChecked
-
   updateSectionCount(sectionId)
   updateProgress()
   checkAllDone()
@@ -669,34 +476,16 @@ function checkAllDone() {
 async function resetWeek() {
   if (!confirm('Reset all checked items for this week?')) return
   setStatus('Resetting...', 'saving')
-
-  const { error } = await db
-    .from('shopping_items')
-    .update({ is_checked: false })
-    .eq('week_number', currentWeek)
-
-  if (error) { setStatus('Error resetting', 'error'); return }
-
+  await db.from('shopping_items').update({ is_checked: false }).eq('week_number', currentWeek)
   await loadShoppingList()
   setStatus('✓ Reset', 'saved')
   setTimeout(() => setStatus(''), 1500)
 }
 
-// ─────────────────────────────────────────
-// MEALS
-// ─────────────────────────────────────────
 async function loadMeals() {
-  const { data: plans } = await db
-    .from('weekly_plans')
-    .select('*, meals(*)')
-    .eq('week_number', currentWeek)
-
+  const { data: plans } = await db.from('weekly_plans').select('*, meals(*)').eq('week_number', currentWeek)
   const container = document.getElementById('mealsContent')
-  if (!plans || plans.length === 0) {
-    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--mid-brown)">No meals for this week yet.</div>'
-    return
-  }
-
+  if (!plans || plans.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--mid-brown)">No meals for this week yet.</div>'; return }
   container.innerHTML = plans.map((plan, i) => `
     <div class="meal-card">
       <div class="meal-num">${i+1}</div>
@@ -709,18 +498,35 @@ async function loadMeals() {
     </div>`).join('')
 }
 
-// ─────────────────────────────────────────
-// LUNCHBOX
-// ─────────────────────────────────────────
+async function loadSides() {
+  const { data } = await db.from('sides').select('*').order('category')
+  const container = document.getElementById('sidesContent')
+  if (!data || data.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--mid-brown)">No sides saved yet.</div>'; return }
+  const categories = {}
+  data.forEach(side => { if (!categories[side.category]) categories[side.category] = []; categories[side.category].push(side) })
+  const icons = { 'Potato': '🥔', 'Vegetable': '🥦', 'Salad': '🥗', 'Sauce': '🫙', 'Rice': '🍚' }
+  container.innerHTML = Object.entries(categories).map(([cat, sides]) => `
+    <div class="section-label">${icons[cat] || '🍴'} ${cat}</div>
+    ${sides.map(side => `
+      <div class="side-card">
+        <div class="side-name">${side.name}</div>
+        <div class="side-meta">
+          <span class="side-tag category">${side.category}</span>
+          <span class="side-tag time">⏱ ${side.cook_time}</span>
+          ${(side.pairs_with || []).slice(0,2).map(p => `<span class="side-tag pairs">With: ${p.split(' ').slice(0,2).join(' ')}…</span>`).join('')}
+        </div>
+        <ol class="side-steps">
+          ${(side.steps || []).map((step, i) => `<li><div class="step-num">${i+1}</div><span>${step}</span></li>`).join('')}
+        </ol>
+        ${side.notes ? `<div class="side-notes">💡 ${side.notes}</div>` : ''}
+      </div>`).join('')}
+  `).join('')
+}
+
 async function loadLunchbox() {
   const { data } = await db.from('lunchbox_ideas').select('*').order('created_at')
   const container = document.getElementById('lunchboxContent')
-
-  if (!data || data.length === 0) {
-    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--mid-brown)">No lunchbox ideas yet.</div>'
-    return
-  }
-
+  if (!data || data.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--mid-brown)">No lunchbox ideas yet.</div>'; return }
   container.innerHTML = data.map(idea => `
     <div class="lunch-card">
       <div class="lunch-name">${idea.name}</div>
@@ -728,26 +534,14 @@ async function loadLunchbox() {
         <span class="lunch-tag style">${idea.style}</span>
         ${idea.based_on ? `<span class="lunch-tag based">${idea.based_on}</span>` : ''}
       </div>
-      ${idea.notes ? `<div style="font-size:12px;color:var(--mid-brown);margin-top:6px;line-height:1.5">${idea.notes}</div>` : ''}
+      ${idea.notes ? `<div class="lunch-notes">${idea.notes}</div>` : ''}
     </div>`).join('')
 }
 
-// ─────────────────────────────────────────
-// RECIPE BOOK (all weeks)
-// ─────────────────────────────────────────
 async function loadRecipeBook() {
-  const { data: plans } = await db
-    .from('weekly_plans')
-    .select('week_number, week_label, meals(*)')
-    .order('week_number')
-
+  const { data: plans } = await db.from('weekly_plans').select('week_number, meals(*)').order('week_number')
   const container = document.getElementById('recipesContent')
-
-  if (!plans || plans.length === 0) {
-    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--mid-brown)">No recipes saved yet.</div>'
-    return
-  }
-
+  if (!plans || plans.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--mid-brown)">No recipes saved yet.</div>'; return }
   container.innerHTML = plans.map(plan => `
     <div class="recipe-card">
       <div class="recipe-header">
@@ -764,9 +558,6 @@ async function loadRecipeBook() {
     </div>`).join('')
 }
 
-// ─────────────────────────────────────────
-// UI HELPERS
-// ─────────────────────────────────────────
 function showPanel(name, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'))
@@ -774,9 +565,7 @@ function showPanel(name, btn) {
   if (btn) btn.classList.add('active')
 }
 
-function toggleSection(id) {
-  document.getElementById('sec-' + id).classList.toggle('collapsed')
-}
+function toggleSection(id) { document.getElementById('sec-' + id).classList.toggle('collapsed') }
 
 function selectWeek(num, btn) {
   document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'))
@@ -792,9 +581,6 @@ function setStatus(msg, type = '') {
   el.className = 'status-bar ' + type
 }
 
-// ─────────────────────────────────────────
-// START
-// ─────────────────────────────────────────
 init()
 </script>
 </body>
