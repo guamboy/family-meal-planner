@@ -195,6 +195,7 @@ document.write('<link rel="manifest" href="' + URL.createObjectURL(blob) + '">')
   <div class="week-bar-inner" id="weekChips">
     <button class="week-chip active" onclick="selectWeek(1, this)">Week 1</button>
     <button class="week-chip" onclick="selectWeek(2, this)">Week 2</button>
+    <button class="week-chip" onclick="selectWeek(3, this)">Week 3</button>
   </div>
 </div>
 
@@ -385,6 +386,53 @@ const WEEK2_SHOPPING = [
   {week_number:2,section:'🧂 Sauces & Condiments',item_text:'Star anise — 3–4',item_note:'Massaman'}
 ]
 
+const WEEK3_MEALS = [
+  { name:'Asian Beef Bowls', source:'RecipeTin Eats', url:'https://www.recipetineats.com/asian-beef-bowls/', category:'Asian', notes:'Saucy mince over rice — 20 mins. Add cucumber, carrot & green onion on top. Kids almost always love this one', cook_time:'20 mins', kid_friendly:true },
+  { name:'Gravy Baked Chicken Thighs & Drumsticks', source:'RecipeTin Eats', url:'https://www.recipetineats.com/gravy-baked-chicken-thighs-and-drumsticks/', category:'Chicken', notes:'Chicken bakes in its own gravy — serve over mash or rice. Lunchbox gold: leftovers + gravy in thermos', cook_time:'1h 10m', kid_friendly:true },
+  { name:'Quick Coconut Chicken Curry', source:'RecipeTin Eats', url:'https://www.recipetineats.com/coconut-chicken-curry-quick-easy/', category:'Curry', notes:'Mild Thai coconut curry — 30 mins, kid-approved. Use store-bought red curry paste. Adjust chilli to taste', cook_time:'30 mins', kid_friendly:true },
+  { name:'Filipino Pork Adobo', source:'RecipeTin Eats', url:'https://www.recipetineats.com/filipino-pork-adobo/', category:'Pork', notes:'Soy + vinegar braise — set and simmer 1hr. Salty-sour-savoury, incredible with steamed rice. Lunchbox winner', cook_time:'1h 15m', kid_friendly:true },
+  { name:'Easy Homemade Pastrami', source:'RecipeTin Eats', url:'https://www.recipetineats.com/easy-homemade-pastrami/', category:'Beef', notes:'Start with corned beef — apply pastrami rub, rest overnight, roast 3–4hrs. Slice thin for sandwiches or boards', cook_time:'4h + overnight', kid_friendly:false }
+]
+
+const WEEK3_SHOPPING = [
+  {week_number:3,section:'🥩 Meat & Seafood',item_text:'Beef mince — 500g',item_note:'Asian Beef Bowls'},
+  {week_number:3,section:'🥩 Meat & Seafood',item_text:'Chicken thighs & drumsticks — 1.2kg',item_note:'Gravy Baked Chicken'},
+  {week_number:3,section:'🥩 Meat & Seafood',item_text:'Boneless chicken thighs — 600g',item_note:'Coconut Curry'},
+  {week_number:3,section:'🥩 Meat & Seafood',item_text:'Pork shoulder — 1kg (cut into chunks)',item_note:'Filipino Pork Adobo'},
+  {week_number:3,section:'🥩 Meat & Seafood',item_text:'Corned beef — 1.5kg',item_note:'Pastrami — buy pre-brined'},
+  {week_number:3,section:'🥕 Vegetables',item_text:'Onions — 3 large',item_note:null},
+  {week_number:3,section:'🥕 Vegetables',item_text:'Garlic — 3 bulbs',item_note:'Pork Adobo uses a whole bulb'},
+  {week_number:3,section:'🥕 Vegetables',item_text:'Fresh ginger — 1 large knob',item_note:'Coconut Curry'},
+  {week_number:3,section:'🥕 Vegetables',item_text:'Mushrooms — 300g',item_note:'Gravy Baked Chicken'},
+  {week_number:3,section:'🥕 Vegetables',item_text:'Green onions/shallots — 1 bunch',item_note:'Asian Bowls garnish'},
+  {week_number:3,section:'🥕 Vegetables',item_text:'Cucumber — 1',item_note:'Asian Bowls garnish'},
+  {week_number:3,section:'🥕 Vegetables',item_text:'Carrots — 2',item_note:'Asian Bowls garnish'},
+  {week_number:3,section:'🥕 Vegetables',item_text:'Limes — 4',item_note:'Coconut Curry + Asian Bowls'},
+  {week_number:3,section:'🌿 Fresh Herbs',item_text:'Fresh coriander — 1 bunch',item_note:'Coconut Curry'},
+  {week_number:3,section:'🌿 Fresh Herbs',item_text:'Fresh thyme — 1 bunch',item_note:'Gravy Baked Chicken'},
+  {week_number:3,section:'🧈 Fridge & Dairy',item_text:'Butter — 125g',item_note:'Gravy Baked Chicken'},
+  {week_number:3,section:'🧈 Fridge & Dairy',item_text:'Eggs — 6 pack',item_note:'Lunchbox bento'},
+  {week_number:3,section:'🥫 Dry & Canned',item_text:'Coconut milk — 2 cans (Ayam preferred)',item_note:'Coconut Curry'},
+  {week_number:3,section:'🥫 Dry & Canned',item_text:'Thai red curry paste — 1 jar',item_note:'Coconut Curry'},
+  {week_number:3,section:'🥫 Dry & Canned',item_text:'Chicken stock — 500ml',item_note:'Gravy Baked Chicken'},
+  {week_number:3,section:'🥫 Dry & Canned',item_text:'Plain flour',item_note:'Check pantry — gravy thickener'},
+  {week_number:3,section:'🥫 Dry & Canned',item_text:'Cornflour — small packet',item_note:'Asian Bowls sauce'},
+  {week_number:3,section:'🥫 Dry & Canned',item_text:'Jasmine rice — 1kg',item_note:null},
+  {week_number:3,section:'🥫 Dry & Canned',item_text:'Bread rolls or sourdough — 1 loaf',item_note:'Pastrami sandwiches'},
+  {week_number:3,section:'🧂 Sauces & Condiments',item_text:'Soy sauce — light & dark',item_note:'Check pantry first'},
+  {week_number:3,section:'🧂 Sauces & Condiments',item_text:'Oyster sauce',item_note:'Check pantry first'},
+  {week_number:3,section:'🧂 Sauces & Condiments',item_text:'Sesame oil',item_note:'Check pantry first'},
+  {week_number:3,section:'🧂 Sauces & Condiments',item_text:'Fish sauce',item_note:'Check pantry first'},
+  {week_number:3,section:'🧂 Sauces & Condiments',item_text:'White vinegar — 1 bottle',item_note:'Filipino Pork Adobo'},
+  {week_number:3,section:'🧂 Sauces & Condiments',item_text:'Brown sugar',item_note:'Check pantry first'},
+  {week_number:3,section:'🧂 Sauces & Condiments',item_text:'Worcestershire sauce',item_note:'Check pantry first'},
+  {week_number:3,section:'🧂 Spices (Pastrami Rub)',item_text:'Coarsely ground black pepper — large grind',item_note:'Pastrami — check pantry'},
+  {week_number:3,section:'🧂 Spices (Pastrami Rub)',item_text:'Coriander seeds — 1 packet',item_note:'Pastrami rub'},
+  {week_number:3,section:'🧂 Spices (Pastrami Rub)',item_text:'Mustard seeds — 1 packet',item_note:'Pastrami rub'},
+  {week_number:3,section:'🧂 Spices (Pastrami Rub)',item_text:'Onion powder',item_note:'Check pantry first'},
+  {week_number:3,section:'🧂 Spices (Pastrami Rub)',item_text:'Smoked paprika',item_note:'Check pantry first'}
+]
+
 const WEEK1_LUNCHBOX = [
   {name:'Beef Stew in Thermos',style:'Thermos Leftover',based_on:'Dinner — Beef Stew',notes:'Heat piping hot, pre-warm thermos with boiling water for 5 mins first. Add a bread roll on the side.'},
   {name:'Shredded Roast Chicken Rice Bowl',style:'Thermos Leftover',based_on:'Dinner — Roast Chicken',notes:'Pull leftover chicken off bone, mix with butter and pan juices, serve over rice in thermos.'},
@@ -430,7 +478,8 @@ async function loadShoppingList() {
   const container = document.getElementById('shoppingContent')
   const tips = {
     1: 'Buy a <strong>larger ~2kg chicken</strong> — leftovers power 3 lunchboxes. Make a <strong>double batch of beef stew</strong> — it freezes brilliantly.',
-    2: 'The <strong>Massaman Lamb</strong> goes in the slow cooker in the morning — 10hrs on low. <strong>Dark soy sauce</strong> is different to regular — worth grabbing fresh for the Chow Mein.'
+    2: 'The <strong>Massaman Lamb</strong> goes in the slow cooker in the morning — 10hrs on low. <strong>Dark soy sauce</strong> is different to regular — worth grabbing fresh for the Chow Mein.',
+    3: 'Start the <strong>Pastrami the night before</strong> — rub the corned beef and leave uncovered in the fridge overnight. The <strong>Pork Adobo</strong> reheats brilliantly — make double for lunchboxes.'
   }
   container.innerHTML = `<div class="tip-box"><div class="tip-icon">💡</div><div class="tip-text"><strong>Market tip:</strong> ${tips[currentWeek] || ''}</div></div>`
   Object.entries(sections).forEach(([section, items]) => {
@@ -674,6 +723,17 @@ async function seedWeek2IfNeeded() {
   setStatus('Week 2 ready!', 'saved'); setTimeout(() => setStatus(''), 2000)
 }
 
+// ─── WEEK 3 SEED ─────────────────────────────────────────────
+async function seedWeek3IfNeeded() {
+  const { data: existing } = await db.from('weekly_plans').select('id').eq('week_number', 3).limit(1)
+  if (existing && existing.length > 0) return
+  setStatus('Setting up Week 3...', 'saving')
+  const { data: m3 } = await db.from('meals').insert(WEEK3_MEALS).select()
+  if (m3) await db.from('weekly_plans').insert(m3.map(m => ({ week_number:3, week_label:'Week 3', meal_id:m.id })))
+  await db.from('shopping_items').insert(WEEK3_SHOPPING)
+  setStatus('Week 3 ready!', 'saved'); setTimeout(() => setStatus(''), 2000)
+}
+
 // ─── UI HELPERS ──────────────────────────────────────────────
 function showPanel(name, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
@@ -689,6 +749,7 @@ async function selectWeek(num, btn) {
   btn.classList.add('active')
   currentWeek = num
   if (num === 2) await seedWeek2IfNeeded()
+  if (num === 3) await seedWeek3IfNeeded()
   await loadShoppingList()
   await loadMeals()
 }
